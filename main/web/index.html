@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        .button {
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        .button1 {
+            background-color: #000000;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>WUROV Float WebServer</h1>
+    <p>Toggle the onboard LED (GPIO4)</p>
+    <h3 id="led_state">LED State: OFF</h3>
+    <script>
+        var ledon_button = document.getElementById("ledon").onclick = async() => {
+            const response = await fetch("/ledon");
+            if(response.ok){
+                var led_state = document.getElementById("led_state");
+                led_state.textContent = "LED State: ON";
+            }else{
+                var led_state = document.getElementById("led_state");
+                led_state.textContent = "LED State: it shart";
+
+                console.log("it shart");
+            }
+        };
+        
+        var ledoff_button = document.getElementById("ledoff").onclick = async() => {
+            const response = await fetch("/ledoff");
+            if(response.ok){
+                var led_state = document.getElementById("led_state");
+                led_state.textContent = "LED State: OFF";
+            }else{
+                var led_state = document.getElementById("led_state");
+                led_state.textContent = "LED State: it shart";
+
+                console.log("it shart");
+            }
+        };
+    </script>
+    <button class="button button1" id="ledon">LED ON</button>
+    <button class="button" id="ledoff">LED OFF</button>
+</body>
+
+</html>
+"
