@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <style>
         .button {
@@ -27,9 +28,17 @@
     <script>
         var ledon_button = document.getElementById("ledon")
 
-        async function led_on_callback(){
+        async function led_on_callback() {
             console.log("is it work");
-            const response = await fetch("/ledon");
+            const response = await fetch("/ledon",
+                {
+                    method: "post",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+
             if (response.ok) {
                 var led_state = document.getElementById("led_state");
                 led_state.textContent = "LED State: ON";
@@ -39,13 +48,20 @@
                 console.log(response.ok);
                 console.log("it shart");
             }
-        }  
+        }
 
         var ledoff_button = document.getElementById("ledoff")
 
-        async function led_off_callback(){
+        async function led_off_callback() {
             console.log("is it work");
-            const response = await fetch("/ledoff");
+            const response = await fetch("/ledoff",
+                {
+                    method: "post",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
             if (response.ok) {
                 var led_state = document.getElementById("led_state");
                 led_state.textContent = "LED State: OFF";
@@ -55,10 +71,11 @@
                 console.log(response.ok);
                 console.log("it shart");
             }
-        }  
+        }
 
     </script>
     <button class="button button1" id="ledon" onclick="led_on_callback()">LED ON</button>
     <button class="button" id="ledoff" onclick="led_off_callback()">LED OFF</button>
 </body>
+
 </html>

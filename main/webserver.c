@@ -68,14 +68,14 @@ httpd_uri_t index_get_uri = {
 
 httpd_uri_t ledon_uri = {
 	.uri	  = "/ledon",
-	.method   = HTTP_GET,
+	.method   = HTTP_POST,
 	.handler  = ledON_handler,
 	.user_ctx = NULL
 };
 
 httpd_uri_t lefoff_uri = {
 	.uri	  = "/ledoff",
-	.method   = HTTP_GET,
+	.method   = HTTP_POST,
 	.handler  = ledOFF_handler,
 	.user_ctx = NULL
 };
