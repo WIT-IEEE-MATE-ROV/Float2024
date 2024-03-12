@@ -162,7 +162,7 @@ static const httpd_uri_t root = {
 <h1>WUROV Float WebServer</h1>\
 <p>Toggle the onboard LED (GPIO4)</p>\
 <h3>LED State: OFF</h3>\
-<button class=\"button button1\" onclick=\"window.location.href=\'/ledon\'\">LED ON</button>\
+<button class=\"button button1\" onclick=\"window.location.href=\'/ledon_uri\'\">LED ON</button>\
 </body>\
 </html>\
  "
@@ -188,8 +188,8 @@ static esp_err_t ledON_handler(httpd_req_t *req)
     return error;
 }
 
-static const httpd_uri_t ledon = {
-    .uri       = "/ledon",
+static const httpd_uri_t ledon_uri = {
+    .uri       = "/ledon_uri",
     .method    = HTTP_GET,
     .handler   = ledON_handler,
     .user_ctx  = " <!DOCTYPE html>\
@@ -265,7 +265,7 @@ static const httpd_uri_t ledoff = {
 <h1>WUROV Float WebServer</h1>\
 <p>Toggle the onboard LED (GPIO4)</p>\
 <h3>LED State: OFF</h3>\
-<button class=\"button button1\" onclick=\"window.location.href=\'/ledon\'\">LED ON</button>\
+<button class=\"button button1\" onclick=\"window.location.href=\'/ledon_uri\'\">LED ON</button>\
 </body>\
 </html>\
  "
@@ -283,7 +283,7 @@ static httpd_handle_t start_webserver(void)
         // Set URI handlers
         ESP_LOGI(TAG, "Registering URI handlers");
         httpd_register_uri_handler(server, &ledoff);
-        httpd_register_uri_handler(server, &ledon);
+        httpd_register_uri_handler(server, &ledon_uri);
         httpd_register_uri_handler(server,&root);
         return server;
     }
