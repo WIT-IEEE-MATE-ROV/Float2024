@@ -226,7 +226,7 @@ void init(uint8_t *data)
     }
 }
 
-void app_main(void)
+void app_main_2(void)
 {
     uint8_t data[3];
     init(data); /* Start i2c device and check if it works*/

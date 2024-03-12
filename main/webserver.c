@@ -53,6 +53,11 @@ static esp_err_t ledON_handler(httpd_req_t *req)
 }
 
 
+static esp_err_t ledOFF_handler(httpd_req_t *req)
+{
+		ESP_LOGI(TAG, "Recieved ledoff request");
+	    return ESP_OK;
+}
 
 httpd_uri_t index_get_uri = {
 	.uri	  = "/",
@@ -71,16 +76,16 @@ httpd_uri_t ledon_uri = {
 httpd_uri_t lefoff_uri = {
 	.uri	  = "/ledoff",
 	.method   = HTTP_GET,
-	.handler  = ledON_handler,
+	.handler  = ledOFF_handler,
 	.user_ctx = NULL
 };
 
-httpd_uri_t url = {
-	.uri	  = "/ledon",
-	.method   = HTTP_GET,
-	.handler  = ledON_handler,
-	.user_ctx = NULL
-};
+// httpd_uri_t url = {
+// 	.uri	  = "/ledon",
+// 	.method   = HTTP_GET,
+// 	.handler  = ledON_handler,
+// 	.user_ctx = NULL
+// };
 
 // httpd_uri_t sync_post = {
 // 	.uri	  = "/sync",
@@ -99,6 +104,9 @@ static esp_err_t http_server_init(void)
 
 	if (httpd_start(&http_server, &config) == ESP_OK) {
 		httpd_register_uri_handler(http_server, &index_get_uri);
+		httpd_register_uri_handler(http_server, &ledon_uri);
+		httpd_register_uri_handler(http_server, &lefoff_uri);
+		
 		//httpd_register_uri_handler(http_server, &sync_post);
 
 	}
