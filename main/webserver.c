@@ -33,7 +33,9 @@ esp_err_t index_get_handler(httpd_req_t *req)
 
 static esp_err_t ledON_handler(httpd_req_t *req)
 {
+	const char resp[] = "URI POST Response";
 	ESP_LOGI(TAG, "Recieved ledon request");
+    httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
     // esp_err_t error;
     // gpio_set_level(LED, 1);
     // // xTaskCreate(spin_motor(),"Spin Motor",1000, NULL, 1, NULL);
@@ -55,7 +57,9 @@ static esp_err_t ledON_handler(httpd_req_t *req)
 
 static esp_err_t ledOFF_handler(httpd_req_t *req)
 {
+		const char resp[] = "URI POST Response";
 		ESP_LOGI(TAG, "Recieved ledoff request");
+    	httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
 	    return ESP_OK;
 }
 
