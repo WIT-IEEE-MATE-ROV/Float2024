@@ -15,9 +15,9 @@ static const char *TAG = "stepper";
 #define LEDC_MODE               LEDC_HIGH_SPEED_MODE
 #define LEDC_OUTPUT_IO          (5) // Define the output GPIO
 #define LEDC_CHANNEL            LEDC_CHANNEL_0
-#define LEDC_DUTY_RES           LEDC_TIMER_20_BIT // Set duty resolution to 13 bits
+#define LEDC_DUTY_RES           LEDC_TIMER_14_BIT // Set duty resolution to 13 bits
 //#define LEDC_DUTY               (4096) // Set duty to 50%. (2 ** LEDC_DUTY_RES) * 50% = 4096
-#define LEDC_FREQUENCY          (100) // Frequency in Hertz. Set frequency at 4 kHz
+#define LEDC_FREQUENCY          100 // Frequency in Hertz. Set frequency at 4 kHz
 
 uint32_t LEDC_DUTY = (powf(2.f, 20.f) / 2.f);
 
@@ -44,13 +44,15 @@ void stepper_init(){
         .timer_sel      = LEDC_TIMER,
         .intr_type      = LEDC_INTR_DISABLE,
         .gpio_num       = LEDC_OUTPUT_IO,
-        .duty           = 524288, // Set duty to 0%
+        .duty           = 8192, // Set duty to 0%
         .hpoint         = 0
     };
     ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel));
 
-    ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 524288);
+    ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 8192);
     ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
+
+	while(1) vTaskDelay(10);
 }
 
 // set direction of and speed stepper bases on floating poinr valuse from -1 to 1 
