@@ -16,6 +16,7 @@ EPS-IDF applicationto recieve get and post requests via the HTTP protocol.
 #include "pin_diagrams.c"
 #include "driver/i2c.h" /*  Needed for I2C */
 #include "webserver.h"
+#include "stepper.h"
 
 static const char *TAG = "main";
 
@@ -353,8 +354,14 @@ void app_main(void)
 	// ESP_ERROR_CHECK(i2c_driver_install(I2C_NUM_0, I2C_MODE_MASTER, 0, 0, 0));
     void *param = NULL; 
     TaskHandle_t ws_task = NULL;
+    TaskHandle_t stepper_init_task = NULL;
+
     xTaskCreate(ws_run, "WEBSERVER", 3584, param, 1, &ws_task);
+    xTaskCreate(stepper_init, "STEPPER", 3584, param, 1, &stepper_init_task);
+
     configASSERT(ws_task);
+    configASSERT(stepper_init_task);
+
 
     while(1)
     vTaskDelay(10);
