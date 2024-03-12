@@ -22,8 +22,6 @@ static const char *TAG = "stepper";
 uint32_t LEDC_DUTY = (powf(2.f, 20.f) / 2.f);
 
 
-
-
 // sets the dir pin and returns the state
 // 1 HIGH 0 LOW 
 // Direction will depend on the driver you use
@@ -88,7 +86,7 @@ void stepper_init()
     {
         vTaskDelay(500);
         //ledc_set_freq(LEDC_MODE, LEDC_CHANNEL, 100 + freq_step);
-        ret = stp_set_dir(0);
+        ret =stp_set_dir (0);
         vTaskDelay(500);
         ret = stp_set_dir(1);
 
