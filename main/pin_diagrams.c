@@ -30,4 +30,4 @@
 TaskHandle_t task1_handle = NULL;
 TaskHandle_t task2_handle = NULL;
 
-static const char *TAG = "Float Server";
+//static const char *TAG = "Float Server";

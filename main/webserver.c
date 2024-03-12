@@ -8,7 +8,10 @@
 #include <esp_wifi.h>
 #include <time.h>
 #include <sys/time.h>
+#include "esp_log.h"
+#include "esp_app_trace.h"
 
+static const char *TAG = "webserver";
 
 #define SSID "FloatWIT" 
 
@@ -18,7 +21,7 @@ extern const uint8_t index_html_end[] asm("_binary_index_html_end");
 
 esp_err_t index_get_handler(httpd_req_t *req)
 {
-	error = httpd_resp_send(req, (const char *) index_html_start, index_html_end - index_html_start);
+	esp_err_t error = httpd_resp_send(req, (const char *) index_html_start, index_html_end - index_html_start);
 	if (error != ESP_OK){
         ESP_LOGI(TAG, "Error %d while sending Response", error);
     } else {
@@ -30,22 +33,23 @@ esp_err_t index_get_handler(httpd_req_t *req)
 
 static esp_err_t ledON_handler(httpd_req_t *req)
 {
-    esp_err_t error;
-    gpio_set_level(LED, 1);
-    // xTaskCreate(spin_motor(),"Spin Motor",1000, NULL, 1, NULL);
-    if(task2_handle != NULL){
-        vTaskSuspend(task2_handle);
-    }
-    xTaskCreate(task1, "task 1", 4096, NULL, 1, &task1_handle);
-    ESP_LOGI(TAG, "LED Turned ON");
-    const char *response = (const char *) req->user_ctx;
-    error = httpd_resp_send(req, response, strlen(response));
-    if (error != ESP_OK){
-        ESP_LOGI(TAG, "Error %d while sending Response", error);
-    } else {
-        ESP_LOGI(TAG, "Response sent Successfully");
-    }
-    return error;
+	ESP_LOGI(TAG, "Recieved ledon request");
+    // esp_err_t error;
+    // gpio_set_level(LED, 1);
+    // // xTaskCreate(spin_motor(),"Spin Motor",1000, NULL, 1, NULL);
+    // if(task2_handle != NULL){
+    //     vTaskSuspend(task2_handle);
+    // }
+    // xTaskCreate(task1, "task 1", 4096, NULL, 1, &task1_handle);
+    // ESP_LOGI(TAG, "LED Turned ON");
+    // const char *response = (const char *) req->user_ctx;
+    // error = httpd_resp_send(req, response, strlen(response));
+    // if (error != ESP_OK){
+    //     ESP_LOGI(TAG, "Error %d while sending Response", error);
+    // } else {
+    //     ESP_LOGI(TAG, "Response sent Successfully");
+    // }
+    return ESP_OK;
 }
 
 
