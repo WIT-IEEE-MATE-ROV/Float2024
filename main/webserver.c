@@ -8,17 +8,20 @@
 #include <esp_wifi.h>
 #include <time.h>
 #include <sys/time.h>
+
 #include "esp_log.h"
 #include "esp_app_trace.h"
+#include "stepper.h"
 
 static const char *TAG = "webserver";
 
 #define SSID "FloatWIT" 
 
+// Lets html to be loaded from seprate file
 extern const uint8_t index_html_start[] asm("_binary_index_html_start");
 extern const uint8_t index_html_end[] asm("_binary_index_html_end");
 
-
+// Sends the html page when root ip is requested
 esp_err_t index_get_handler(httpd_req_t *req)
 {
 	esp_err_t error = httpd_resp_send(req, (const char *) index_html_start, index_html_end - index_html_start);
@@ -30,12 +33,13 @@ esp_err_t index_get_handler(httpd_req_t *req)
     return error;
 }
 
-
+//
 static esp_err_t ledON_handler(httpd_req_t *req)
 {
 	const char resp[] = "URI POST Response";
 	ESP_LOGI(TAG, "Recieved ledon request");
     httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
+	stp_set_dir(0);
     // esp_err_t error;
     // gpio_set_level(LED, 1);
     // // xTaskCreate(spin_motor(),"Spin Motor",1000, NULL, 1, NULL);
@@ -148,6 +152,9 @@ static esp_err_t softap_init(void)
 }
 
 void ws_run(void* a) {
+
+
+
 	esp_err_t ret = nvs_flash_init();
 
 	if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -158,6 +165,13 @@ void ws_run(void* a) {
 	ESP_ERROR_CHECK(ret);
 	ESP_ERROR_CHECK(softap_init());
 	ESP_ERROR_CHECK(http_server_init());
+
+
+	// Task that inits the stepper code when the server is initialized
+    void *param = NULL; 
+    TaskHandle_t stepper_init_task = NULL;
+	xTaskCreate(stepper_init, "STEPPER", 3584, param, 1, &stepper_init_task);
+
 
 	while(1) vTaskDelay(10);
 }

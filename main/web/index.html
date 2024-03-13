@@ -5,6 +5,7 @@
     <style>
         .button {
             border: none;
+            background-color: #000000;
             color: white;
             padding: 15px 32px;
             text-align: center;
@@ -25,57 +26,84 @@
     <h1>WUROV Float WebServer</h1>
     <p>Toggle the onboard LED (GPIO4)</p>
     <h3 id="led_state">LED State: OFF</h3>
-    <script>
-        var ledon_button = document.getElementById("ledon")
 
-        async function led_on_callback() {
-            console.log("is it work");
-            const response = await fetch("/ledon",
-                {
-                    method: "post",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-            if (response.ok) {
-                var led_state = document.getElementById("led_state");
-                led_state.textContent = "LED State: ON";
-            } else {
-                var led_state = document.getElementById("led_state");
-                led_state.textContent = "LED State: it shart";
-                console.log(response.ok);
-                console.log("it shart");
-            }
-        }
-
-        var ledoff_button = document.getElementById("ledoff")
-
-        async function led_off_callback() {
-            console.log("is it work");
-            const response = await fetch("/ledoff",
-                {
-                    method: "post",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                });
-            if (response.ok) {
-                var led_state = document.getElementById("led_state");
-                led_state.textContent = "LED State: OFF";
-            } else {
-                var led_state = document.getElementById("led_state");
-                led_state.textContent = "LED State: it shart";
-                console.log(response.ok);
-                console.log("it shart");
-            }
-        }
-
-    </script>
     <button class="button button1" id="ledon" onclick="led_on_callback()">LED ON</button>
     <button class="button" id="ledoff" onclick="led_off_callback()">LED OFF</button>
+
+    <p>Toggle the stepper motor direction</p>
+    <h3 id="step_state">STEP PIN State: LOW</h3>
+
+    <button class="button" id="dirHIGH" onclick="step_high_callback()">HIGH</button>
+    <button class="button" id="dirLOW" onclick="step_high_callback()">LOW</button>
 </body>
+<script>
+    // LED ON OFF
+    var ledon_button = document.getElementById("ledon")
+    var ledoff_button = document.getElementById("ledoff")
+    var led_state = document.getElementById("led_state");
+
+    async function led_on_callback() {
+        console.log("is it work");
+        const response = await fetch("/ledon",
+            {
+                method: "post",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+        if (response.ok) {
+            led_state.textContent = "LED State: ON";
+        } else {
+            led_state.textContent = `LED State: ERROR ${response.status}`;
+            console.log(response.status);
+        }
+    }
+
+    async function led_off_callback() {
+        console.log("is it work");
+        const response = await fetch("/ledoff",
+            {
+                method: "post",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+        if (response.ok) {
+            led_state.textContent = "LED State: OFF";
+        } else {
+            led_state.textContent = `LED State: ERROR ${response.status}`;
+            console.log(response.status);
+        }
+    }
+
+
+    //STEP PIN HIGH LOW
+    var dirHIGH_button = document.getElementById("dirHIGH");
+    var dirLOW_button = document.getElementById("dirLOW");
+    var step_state = document.getElementById("step_state");
+
+    async function step_high_callback() {
+        console.log("HIGH presed");
+        const response = await fetch("/dirhigh",
+            {
+                method: "post",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+        if (response.ok) {
+            led_state.textContent = "STEP PIN State: HIGH";
+        } else {
+            step_state.textContent = `STEP PIN State: ERROR ${response.status}`
+            console.log(response.status);
+        }
+    }
+
+</script>
 
 </html>
