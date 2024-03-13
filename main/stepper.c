@@ -16,9 +16,11 @@ static const char *TAG = "stepper";
 #define DIR_PIN                                 (4) // the dir pin
 #define LEDC_CHANNEL                            LEDC_CHANNEL_0
 #define LEDC_DUTY_RES                           LEDC_TIMER_10_BIT 
-#define LEDC_MAX_FREQUENCY                      4000 // Frequency in Hertz
+#define LEDC_MAX_FREQUENCY                      5000 // Frequency in Hertz
 #define LEDC_MIN_FREQUENCY                      0
 #define LEDC_DEFAULT_FREQUENCY                  LEDC_MAX_FREQUENCY / 2 
+
+int max_duty = powf(2, LEDC_DUTY_RES);
 
 // sets the dir pin and returns the state
 // 1 HIGH 0 LOW 
@@ -61,6 +63,8 @@ uint16_t stp_set_speed(float val)
 
 void stepper_init()
 {
+
+    printf("MAX DUTY: %d", max_duty);
     //Pin init
     gpio_reset_pin(DIR_PIN);
     gpio_set_direction(DIR_PIN, GPIO_MODE_OUTPUT);
@@ -83,11 +87,11 @@ void stepper_init()
         .timer_sel = LEDC_TIMER,
         .intr_type = LEDC_INTR_DISABLE,
         .gpio_num = LEDC_OUTPUT_IO,
-        .duty = 4096, // Set duty to 0%
+        .duty = max_duty / 4, // Set duty to 0%
         .hpoint = 0};
     ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel));
 
-    ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 8192);
+    ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, max_duty / 4);
     ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
 
     int freq_step = 0;
@@ -96,10 +100,10 @@ void stepper_init()
 
     while (1)
     {
-        vTaskDelay(200);
+        vTaskDelay(100);
         stp_set_speed(10 + freq_step);
         freq_step += 10;
-        vTaskDelay(200);
+        vTaskDelay(100);
         if(freq_step > 100){freq_step = 0;}
     }
    }
