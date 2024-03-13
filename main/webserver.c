@@ -33,7 +33,7 @@ esp_err_t index_get_handler(httpd_req_t *req)
     return error;
 }
 
-//
+// turn on led
 static esp_err_t ledON_handler(httpd_req_t *req)
 {
 	const char resp[] = "URI POST Response";
@@ -58,6 +58,24 @@ static esp_err_t ledON_handler(httpd_req_t *req)
     return ESP_OK;
 }
 
+//----------callback functions----------//
+static esp_err_t dirHIGH_handler(httpd_req_t *req)
+{
+	const char resp[] = "URI POST responce";
+	ESP_LOGI(TAG, "Recieved dirhigh request");
+	stp_set_dir(1);
+	httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
+	return ESP_OK;
+}
+
+static esp_err_t dirLOW_handler(httpd_req_t *req)
+{
+	const char resp[] = "URI POST responce";
+	ESP_LOGI(TAG, "Recieved dirlow request");
+	stp_set_dir(0);
+	httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
+	return ESP_OK;	
+}
 
 static esp_err_t ledOFF_handler(httpd_req_t *req)
 {
@@ -67,6 +85,7 @@ static esp_err_t ledOFF_handler(httpd_req_t *req)
 	    return ESP_OK;
 }
 
+//---------- uri handlers ----------//
 httpd_uri_t index_get_uri = {
 	.uri	  = "/",
 	.method   = HTTP_GET,
@@ -88,6 +107,20 @@ httpd_uri_t lefoff_uri = {
 	.user_ctx = NULL
 };
 
+httpd_uri_t dirhigh_uri ={
+	.uri	  = "/dirhigh",
+	.method   = HTTP_POST,
+	.handler  = dirHIGH_handler,
+	.user_ctx = NULL  
+};
+
+httpd_uri_t dirlow_uri ={
+	.uri	  = "/dirlow",
+	.method   = HTTP_POST,
+	.handler  = dirLOW_handler,
+	.user_ctx = NULL  
+};
+
 // httpd_uri_t url = {
 // 	.uri	  = "/ledon",
 // 	.method   = HTTP_GET,
@@ -103,7 +136,6 @@ httpd_uri_t lefoff_uri = {
 // };
 
 
-
 static esp_err_t http_server_init(void)
 {
 	static httpd_handle_t http_server = NULL;
@@ -114,14 +146,15 @@ static esp_err_t http_server_init(void)
 		httpd_register_uri_handler(http_server, &index_get_uri);
 		httpd_register_uri_handler(http_server, &ledon_uri);
 		httpd_register_uri_handler(http_server, &lefoff_uri);
-		
+		httpd_register_uri_handler(http_server, &dirlow_uri);
+		httpd_register_uri_handler(http_server, &dirhigh_uri);
+
 		//httpd_register_uri_handler(http_server, &sync_post);
 
 	}
 
 	return http_server == NULL ? ESP_FAIL : ESP_OK;
 }
-
 
 static esp_err_t softap_init(void)
 {
@@ -147,14 +180,10 @@ static esp_err_t softap_init(void)
 	res |= esp_wifi_set_mode(WIFI_MODE_AP);
 	res |= esp_wifi_set_config(ESP_IF_WIFI_AP, &wifi_config);
 	res |= esp_wifi_start();
-
 	return res;
 }
 
 void ws_run(void* a) {
-
-
-
 	esp_err_t ret = nvs_flash_init();
 
 	if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -166,12 +195,10 @@ void ws_run(void* a) {
 	ESP_ERROR_CHECK(softap_init());
 	ESP_ERROR_CHECK(http_server_init());
 
-
 	// Task that inits the stepper code when the server is initialized
     void *param = NULL; 
     TaskHandle_t stepper_init_task = NULL;
 	xTaskCreate(stepper_init, "STEPPER", 3584, param, 1, &stepper_init_task);
-
 
 	while(1) vTaskDelay(10);
 }

@@ -34,7 +34,7 @@
     <h3 id="step_state">STEP PIN State: LOW</h3>
 
     <button class="button" id="dirHIGH" onclick="step_high_callback()">HIGH</button>
-    <button class="button" id="dirLOW" onclick="step_high_callback()">LOW</button>
+    <button class="button" id="dirLOW" onclick="step_low_callback()">LOW</button>
 </body>
 <script>
     // LED ON OFF
@@ -97,7 +97,26 @@
             });
 
         if (response.ok) {
-            led_state.textContent = "STEP PIN State: HIGH";
+            step_state.textContent = "STEP PIN State: HIGH";
+        } else {
+            step_state.textContent = `STEP PIN State: ERROR ${response.status}`
+            console.log(response.status);
+        }
+    }
+
+    async function step_low_callback() {
+        console.log("LOW presed");
+        const response = await fetch("/dirlow",
+            {
+                method: "post",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+        if (response.ok) {
+            step_state.textContent = "STEP PIN State: LOW";
         } else {
             step_state.textContent = `STEP PIN State: ERROR ${response.status}`
             console.log(response.status);

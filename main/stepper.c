@@ -79,24 +79,24 @@ void stepper_init()
     ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 4096);
     ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
 
-    int freq_step = 0;
-    int ret;
-    //while(1) vTaskDelay(10);
-    while (1)
-    {
-        vTaskDelay(500);
-        //ledc_set_freq(LEDC_MODE, LEDC_CHANNEL, 100 + freq_step);
-        ret =stp_set_dir (0);
-        vTaskDelay(500);
-        ret = stp_set_dir(1);
+    //int freq_step = 0;
+    //int ret;
+    while(1) vTaskDelay(10);
+//     while (1)
+//     {
+//         vTaskDelay(500);
+//         //ledc_set_freq(LEDC_MODE, LEDC_CHANNEL, 100 + freq_step);
+//         ret =stp_set_dir (0);
+//         vTaskDelay(500);
+//         ret = stp_set_dir(1);
 
-        ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
-        if (freq_step > 1000)
-        {
-            freq_step = 0;
-        }
-        freq_step += 10;
-    }
-}
+//         ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
+//         if (freq_step > 1000)
+//         {
+//             freq_step = 0;
+//         }
+//         freq_step += 10;
+//     }
+   }
 
 

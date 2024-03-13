@@ -241,9 +241,7 @@ void app_main(void)
     // xTaskCreate(stepper_init, "STEPPER", 3584, param, 1, &stepper_init_task);
 
     configASSERT(ws_task);
-    configASSERT(stepper_init_task);
-
-
+    //configASSERT(stepper_init_task);
     while(1)
     vTaskDelay(10);
 }
