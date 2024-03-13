@@ -10,17 +10,15 @@
 
 static const char *TAG = "stepper";
 
-#define LEDC_TIMER LEDC_TIMER_0
-#define LEDC_MODE LEDC_HIGH_SPEED_MODE
-#define LEDC_OUTPUT_IO (5) // The step pin
-#define DIR_PIN (4) // the dir pin
-#define LEDC_CHANNEL LEDC_CHANNEL_0
-#define LEDC_DUTY_RES LEDC_TIMER_14_BIT // Set duty resolution to 13 bits
-// #define LEDC_DUTY               (4096)            // Set duty to 50%. (2 ** LEDC_DUTY_RES) * 50% = 4096
-#define LEDC_FREQUENCY 400 // Frequency in Hertz. Set frequency at 4 kHz
-
-uint32_t LEDC_DUTY = (powf(2.f, 20.f) / 2.f);
-
+#define LEDC_TIMER                              LEDC_TIMER_0
+#define LEDC_MODE                               LEDC_HIGH_SPEED_MODE
+#define LEDC_OUTPUT_IO                          (5) // The step pin
+#define DIR_PIN                                 (4) // the dir pin
+#define LEDC_CHANNEL                            LEDC_CHANNEL_0
+#define LEDC_DUTY_RES                           LEDC_TIMER_14_BIT 
+#define LEDC_MAX_FREQUENCY                      4000 // Frequency in Hertz
+#define LEDC_MIN_FREQUENCY                      0
+#define LEDC_DEFAULT_FREQUENCY                  LEDC_MAX_FREQUENCY / 2 
 
 // sets the dir pin and returns the state
 // 1 HIGH 0 LOW 
@@ -47,6 +45,19 @@ void stp_set_output(float output)
     }
 }
 
+// takes a val from 1 - 100 (%) and caculates and  
+// sets the frequency of the pwm signal 
+uint16_t stp_set_speed(float val)
+{
+    if (val > 100)
+    {
+        val = 100;
+    }
+    uint16_t freq = (val * (LEDC_MAX_FREQUENCY - LEDC_MIN_FREQUENCY) / 100 + LEDC_MIN_FREQUENCY);
+    ledc_set_freq(LEDC_MODE, LEDC_CHANNEL, 100 + freq);
+    return freq;
+}
+
 
 void stepper_init()
 {
@@ -61,7 +72,7 @@ void stepper_init()
         .speed_mode = LEDC_MODE,
         .duty_resolution = LEDC_DUTY_RES,
         .timer_num = LEDC_TIMER,
-        .freq_hz = LEDC_FREQUENCY, // Set output frequency at 4 kHz
+        .freq_hz = LEDC_DEFAULT_FREQUENCY, // Set output frequency at 4 kHz
         .clk_cfg = LEDC_AUTO_CLK};
     ESP_ERROR_CHECK(ledc_timer_config(&ledc_timer));
 
@@ -76,27 +87,21 @@ void stepper_init()
         .hpoint = 0};
     ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel));
 
-    ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 4096);
+    ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 8192);
     ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
 
-    //int freq_step = 0;
+    int freq_step = 0;
     //int ret;
-    while(1) vTaskDelay(10);
-//     while (1)
-//     {
-//         vTaskDelay(500);
-//         //ledc_set_freq(LEDC_MODE, LEDC_CHANNEL, 100 + freq_step);
-//         ret =stp_set_dir (0);
-//         vTaskDelay(500);
-//         ret = stp_set_dir(1);
+    //while(1) vTaskDelay(10);
 
-//         ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
-//         if (freq_step > 1000)
-//         {
-//             freq_step = 0;
-//         }
-//         freq_step += 10;
-//     }
+    while (1)
+    {
+        vTaskDelay(200);
+        stp_set_speed(10 + freq_step);
+        freq_step += 10;
+        vTaskDelay(200);
+        if(freq_step > 100){freq_step = 0;}
+    }
    }
 
 

@@ -199,6 +199,5 @@ void ws_run(void* a) {
     void *param = NULL; 
     TaskHandle_t stepper_init_task = NULL;
 	xTaskCreate(stepper_init, "STEPPER", 3584, param, 1, &stepper_init_task);
-
 	while(1) vTaskDelay(10);
 }
