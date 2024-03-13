@@ -15,7 +15,7 @@ static const char *TAG = "stepper";
 #define LEDC_OUTPUT_IO                          (5) // The step pin
 #define DIR_PIN                                 (4) // the dir pin
 #define LEDC_CHANNEL                            LEDC_CHANNEL_0
-#define LEDC_DUTY_RES                           LEDC_TIMER_14_BIT 
+#define LEDC_DUTY_RES                           LEDC_TIMER_10_BIT 
 #define LEDC_MAX_FREQUENCY                      4000 // Frequency in Hertz
 #define LEDC_MIN_FREQUENCY                      0
 #define LEDC_DEFAULT_FREQUENCY                  LEDC_MAX_FREQUENCY / 2 
@@ -45,7 +45,7 @@ void stp_set_output(float output)
     }
 }
 
-// takes a val from 1 - 100 (%) and caculates and  
+// takes a val from 0 - 100 (%) and caculates and  
 // sets the frequency of the pwm signal 
 uint16_t stp_set_speed(float val)
 {
