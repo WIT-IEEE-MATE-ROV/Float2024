@@ -19,22 +19,112 @@
         .button1 {
             background-color: #000000;
         }
+
+
+        .form_box {
+            float: left;
+            margin-left: 1%;
+            width: 20%;
+        }
+
+        input[type=text],
+        select {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            /* Override default CSS styles */
+            appearance: none;
+            width: 100%;
+            /* Full-width */
+            height: 25px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            /* Set transparency (for mouse-over effects on hover) */
+            -webkit-transition: .2s;
+            /* 0.2 seconds transition on hover */
+            transition: opacity .2s;
+        }
+
+        input[type=range],
+        select {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type=submit] {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type=submit]:hover {
+            background-color: #45a049;
+        }
+
+        div {
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
     </style>
 </head>
 
 <body>
-    <h1>WUROV Float WebServer</h1>
-    <p>Toggle the onboard LED (GPIO4)</p>
-    <h3 id="led_state">LED State: OFF</h3>
+    <div class="form_box">
+        <!-- <h1>WUROV Float WebServer</h1>
+        <p>Toggle the onboard LED (GPIO4)</p>
+        <h3 id="led_state">LED State: OFF</h3>
 
-    <button class="button button1" id="ledon" onclick="led_on_callback()">LED ON</button>
-    <button class="button" id="ledoff" onclick="led_off_callback()">LED OFF</button>
+        <button class="button button1" id="ledon" onclick="led_on_callback()">LED ON</button>
+        <button class="button" id="ledoff" onclick="led_off_callback()">LED OFF</button>
 
-    <p>Toggle the stepper motor direction</p>
-    <h3 id="step_state">STEP PIN State: LOW</h3>
+        <p>Toggle the stepper motor direction</p>
+        <h3 id="step_state">STEP PIN State: LOW</h3>
 
-    <button class="button" id="dirHIGH" onclick="step_high_callback()">HIGH</button>
-    <button class="button" id="dirLOW" onclick="step_low_callback()">LOW</button>
+        <button class="button" id="dirHIGH" onclick="step_high_callback()">HIGH</button>
+        <button class="button" id="dirLOW" onclick="step_low_callback()">LOW</button> -->
+
+        <div class="">
+            <form action="">
+                <label for="stp_spped">Speed to make slide</label>
+                <input type="range" min="0" max="100" id="fname" name="firstname"
+                    oninput="this.nextElementSibling.value = this.value" placeholder="Your name..">
+                    <output></output><br>
+                   
+                <label for="lname">Last Name</label>
+                <input type="text" id="lname" name="lastname" placeholder="Your last name..">
+
+                <label for="country">Country</label>
+                <select id="country" name="country">
+                    <option value="australia">Australia</option>
+                    <option value="canada">Canada</option>
+                    <option value="usa">USA</option>
+                </select>
+
+                <input type="submit" value="Submit">
+            </form>
+
+
+        </div>
 </body>
 <script>
     // LED ON OFF

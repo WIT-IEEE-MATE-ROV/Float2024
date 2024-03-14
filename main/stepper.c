@@ -12,7 +12,7 @@ static const char *TAG = "stepper";
 
 #define LEDC_TIMER                              LEDC_TIMER_0
 #define LEDC_MODE                               LEDC_HIGH_SPEED_MODE
-#define LEDC_OUTPUT_IO                          (5) // The step pin
+#define LEDC_OUTPUT_IO                          (2) // The step pin
 #define DIR_PIN                                 (4) // the dir pin
 #define LEDC_CHANNEL                            LEDC_CHANNEL_0
 #define LEDC_DUTY_RES                           LEDC_TIMER_10_BIT 
@@ -94,18 +94,20 @@ void stepper_init()
     ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, max_duty / 4);
     ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
 
-    int freq_step = 0;
-    //int ret;
-    //while(1) vTaskDelay(10);
+    stp_set_speed(50);
 
-    while (1)
-    {
-        vTaskDelay(100);
-        stp_set_speed(10 + freq_step);
-        freq_step += 10;
-        vTaskDelay(100);
-        if(freq_step > 100){freq_step = 0;}
-    }
+    //int ret;
+    while(1) vTaskDelay(10);
+
+    //speed test very fast
+    // while (1)
+    // {
+    //     vTaskDelay(100);
+    //     stp_set_speed(10 + freq_step);
+    //     freq_step += 10;
+    //     vTaskDelay(100);
+    //     if(freq_step > 100){freq_step = 0;}
+    // }
    }
 
 
