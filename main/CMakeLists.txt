@@ -6,6 +6,8 @@ idf_component_register(SRCS
                     "webserver.h"
                     "stepper.h"
                     "stepper.c"
+                    "sd_card.c"
+                    "sd_card.h"
                     INCLUDE_DIRS "."
                     EMBED_TXTFILES web/index.html
                     )
