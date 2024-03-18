@@ -20,14 +20,7 @@
 #include "esp_eth.h"
 #include "driver/gpio.h"
 
-#define LED 15
-#define dirPin 4
-#define stepPin 2
-#define stepsPerRevolution 200
-#define rotations 5
-#define delays 1500
-
-TaskHandle_t task1_handle = NULL;
-TaskHandle_t task2_handle = NULL;
-
-//static const char *TAG = "Float Server";
+#define LED                 (15)
+#define STEP_PIN            (2)    // The step pin
+#define DIR_PIN             (4)   // the dir pin
+#define ENABLE              (32)   // the dir pin

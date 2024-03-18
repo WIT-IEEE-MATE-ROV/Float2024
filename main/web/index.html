@@ -22,9 +22,13 @@
 
 
         .form_box {
-            float: left;
-            margin-left: 1%;
-            width: 20%;
+            /* width: 40%; */
+            margin-left: auto;
+            margin-right: auto;
+            max-width: fit-content;
+            justify-content: center;
+            text-align: center;
+            
         }
 
         input[type=text],
@@ -90,20 +94,32 @@
 
 <body>
     <div class="form_box">
-        <!-- <h1>WUROV Float WebServer</h1>
+        <h1>WUROV Float WebServer</h1>
         <p>Toggle the onboard LED (GPIO4)</p>
         <h3 id="led_state">LED State: OFF</h3>
 
-        <button class="button button1" id="ledon" onclick="led_on_callback()">LED ON</button>
+        <button class="button button1" id="ledon" onclick="led_on_callback()" style="background-color:green">LED ON</button>
         <button class="button" id="ledoff" onclick="led_off_callback()">LED OFF</button>
 
         <p>Toggle the stepper motor direction</p>
         <h3 id="step_state">STEP PIN State: LOW</h3>
 
-        <button class="button" id="dirHIGH" onclick="step_high_callback()">HIGH</button>
-        <button class="button" id="dirLOW" onclick="step_low_callback()">LOW</button> -->
+        <button class="button" id="dirHIGH" onclick="step_high_callback()" style="background-color:green">FORWARD</button>
+        <button class="button" id="dirLOW" onclick="step_low_callback()">BACKWARD</button>
+        <button class="button" id="dirLOW" onclick="enable_callback()" style="background-color:green">ENABLE</button>
+        <button class="button" id="dirLOW" onclick="disable_callback()" style="background-color:red">DISABLE</button>
 
-        <div class="">
+        <h3 id="control">Control: (Waiting...)</h3>
+        <button class="button" onclick="start_callback()" style="background-color:green">START</button>
+        <button class="button" onclick="data_callback()" style="background-color:blue">DOWNLOAD DATA</button>
+
+        <h3> Current Status: </h3>
+        <p>Depth: </p>
+        <p>Battery(6V): </p>
+        <p>Battery(9V):</p>
+        
+
+        <!-- <div class="">
             <form action="">
                 <label for="stp_spped">Speed to make slide</label>
                 <input type="range" min="0" max="100" id="fname" name="firstname"
@@ -124,7 +140,7 @@
             </form>
 
 
-        </div>
+        </div> -->
 </body>
 <script>
     // LED ON OFF
@@ -174,6 +190,7 @@
     var dirHIGH_button = document.getElementById("dirHIGH");
     var dirLOW_button = document.getElementById("dirLOW");
     var step_state = document.getElementById("step_state");
+    var control = document.getElementById("control");
 
     async function step_high_callback() {
         console.log("HIGH presed");
@@ -211,6 +228,72 @@
             step_state.textContent = `STEP PIN State: ERROR ${response.status}`
             console.log(response.status);
         }
+    }
+
+    async function data_callback() {
+        console.log("Download Data Pressed");
+        const response = await fetch("/downloadData",
+            {
+                method: "post",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+    }
+
+    async function data_download() {
+        console.log("Download Data Pressed");
+        const response = await fetch("/downloadData",
+            {
+                method: "post",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+    }
+
+    async function start_callback() {
+        console.log("Start pressed");
+        const response = await fetch("/start",
+            {
+                method: "post",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+        if (response.ok) {
+            control.textContent = "Control: (Started!)";
+        } else {
+            control.textContent = `Control: ERROR ${response.status}`
+            console.log(response.status);
+        }
+    }
+
+    async function enable_callback() {
+        console.log("Enable stepper pressed");
+        const response = await fetch("/enable",
+            {
+                method: "post",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+    }
+
+    async function disable_callback() {
+        console.log("Disable stepper pressed");
+        const response = await fetch("/disable",
+            {
+                method: "post",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
     }
 
 </script>

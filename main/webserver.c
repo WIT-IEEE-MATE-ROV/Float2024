@@ -12,6 +12,7 @@
 #include "esp_log.h"
 #include "esp_app_trace.h"
 #include "stepper.h"
+#include "pin_diagrams.c"
 
 static const char *TAG = "webserver";
 
@@ -31,31 +32,6 @@ esp_err_t index_get_handler(httpd_req_t *req)
         ESP_LOGI(TAG, "Response sent Successfully");
     }
     return error;
-}
-
-// turn on led
-static esp_err_t ledON_handler(httpd_req_t *req)
-{
-	const char resp[] = "URI POST Response";
-	ESP_LOGI(TAG, "Recieved ledon request");
-    httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
-	stp_set_dir(0);
-    // esp_err_t error;
-    // gpio_set_level(LED, 1);
-    // // xTaskCreate(spin_motor(),"Spin Motor",1000, NULL, 1, NULL);
-    // if(task2_handle != NULL){
-    //     vTaskSuspend(task2_handle);
-    // }
-    // xTaskCreate(task1, "task 1", 4096, NULL, 1, &task1_handle);
-    // ESP_LOGI(TAG, "LED Turned ON");
-    // const char *response = (const char *) req->user_ctx;
-    // error = httpd_resp_send(req, response, strlen(response));
-    // if (error != ESP_OK){
-    //     ESP_LOGI(TAG, "Error %d while sending Response", error);
-    // } else {
-    //     ESP_LOGI(TAG, "Response sent Successfully");
-    // }
-    return ESP_OK;
 }
 
 //----------callback functions----------//
@@ -79,10 +55,56 @@ static esp_err_t dirLOW_handler(httpd_req_t *req)
 
 static esp_err_t ledOFF_handler(httpd_req_t *req)
 {
-		const char resp[] = "URI POST Response";
-		ESP_LOGI(TAG, "Recieved ledoff request");
-    	httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
-	    return ESP_OK;
+	const char resp[] = "URI POST Response";
+	ESP_LOGI(TAG, "Recieved ledoff request");
+	gpio_set_level(LED, 0);
+	httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
+	return ESP_OK;
+}
+
+static esp_err_t ledON_handler(httpd_req_t *req)
+{
+	const char resp[] = "URI POST Response";
+	ESP_LOGI(TAG, "Recieved ledon request");
+	gpio_set_level(LED, 1);
+	httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
+	return ESP_OK;
+}
+
+static esp_err_t start_handler(httpd_req_t *req)
+{
+	const char resp[] = "URI POST Response";
+	ESP_LOGI(TAG, "Recieved start float request");
+	// TODO: Control of Servo
+	httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
+	return ESP_OK;
+}
+	
+static esp_err_t downloadData_handler(httpd_req_t *req)
+{
+	const char resp[] = "URI POST Response";
+	ESP_LOGI(TAG, "Recieved download data request");
+	// TODO: Retrive data from sd card using wifi 
+	httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
+	return ESP_OK;
+}
+
+static esp_err_t enable_handler(httpd_req_t *req)
+{
+	const char resp[] = "URI POST Response";
+	ESP_LOGI(TAG, "Recieved enable stepper request");
+	stp_enable();
+	httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
+	return ESP_OK;
+}
+
+static esp_err_t disable_handler(httpd_req_t *req)
+{
+	const char resp[] = "URI POST Response";
+	ESP_LOGI(TAG, "Recieved disable stepper request");
+	stp_disable();
+	httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
+	return ESP_OK;
 }
 
 //---------- uri handlers ----------//
@@ -121,6 +143,34 @@ httpd_uri_t dirlow_uri ={
 	.user_ctx = NULL  
 };
 
+httpd_uri_t start_uri ={
+	.uri	  = "/start",
+	.method   = HTTP_POST,
+	.handler  = start_handler,
+	.user_ctx = NULL  
+};
+
+httpd_uri_t downloadData_uri ={
+	.uri	  = "/downloadData",
+	.method   = HTTP_POST,
+	.handler  = downloadData_handler,
+	.user_ctx = NULL  
+};
+
+httpd_uri_t enable_uri ={
+	.uri	  = "/enable",
+	.method   = HTTP_POST,
+	.handler  = enable_handler,
+	.user_ctx = NULL  
+};
+
+httpd_uri_t disable_uri ={
+	.uri	  = "/disable",
+	.method   = HTTP_POST,
+	.handler  = disable_handler,
+	.user_ctx = NULL  
+};
+
 // httpd_uri_t url = {
 // 	.uri	  = "/ledon",
 // 	.method   = HTTP_GET,
@@ -148,6 +198,9 @@ static esp_err_t http_server_init(void)
 		httpd_register_uri_handler(http_server, &lefoff_uri);
 		httpd_register_uri_handler(http_server, &dirlow_uri);
 		httpd_register_uri_handler(http_server, &dirhigh_uri);
+		httpd_register_uri_handler(http_server, &disable_uri);
+		httpd_register_uri_handler(http_server, &enable_uri);
+		
 
 		//httpd_register_uri_handler(http_server, &sync_post);
 
