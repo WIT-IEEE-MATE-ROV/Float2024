@@ -16,7 +16,7 @@
 
 static const char *TAG = "webserver";
 
-#define SSID "FloatWIT" 
+#define SSID "FloatWIT_web" 
 
 // Lets html to be loaded from seprate file
 extern const uint8_t index_html_start[] asm("_binary_index_html_start");
@@ -57,7 +57,7 @@ static esp_err_t ledOFF_handler(httpd_req_t *req)
 {
 	const char resp[] = "URI POST Response";
 	ESP_LOGI(TAG, "Recieved ledoff request");
-	gpio_set_level(LED, 0);
+	gpio_set_level((2), 0);
 	httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
 	return ESP_OK;
 }
@@ -66,7 +66,7 @@ static esp_err_t ledON_handler(httpd_req_t *req)
 {
 	const char resp[] = "URI POST Response";
 	ESP_LOGI(TAG, "Recieved ledon request");
-	gpio_set_level(LED, 1);
+	gpio_set_level((2), 1);
 	httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
 	return ESP_OK;
 }
@@ -82,10 +82,16 @@ static esp_err_t start_handler(httpd_req_t *req)
 	
 static esp_err_t downloadData_handler(httpd_req_t *req)
 {
-	const char resp[] = "URI POST Response";
+	const char resp[] = "Recieved download data GET request";
 	ESP_LOGI(TAG, "Recieved download data request");
 	// TODO: Retrive data from sd card using wifi 
-	httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
+	const uint32_t data_len = 2000L;
+	char c[data_len];
+	for (int i = 0; i < data_len; i++) {
+		c[i] = 0x68;
+	}
+	httpd_resp_set_type(req, "text/csv");
+	httpd_resp_send(req, c, data_len);
 	return ESP_OK;
 }
 
@@ -94,6 +100,7 @@ static esp_err_t enable_handler(httpd_req_t *req)
 	const char resp[] = "URI POST Response";
 	ESP_LOGI(TAG, "Recieved enable stepper request");
 	stp_enable();
+
 	httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
 	return ESP_OK;
 }
@@ -152,7 +159,7 @@ httpd_uri_t start_uri ={
 
 httpd_uri_t downloadData_uri ={
 	.uri	  = "/downloadData",
-	.method   = HTTP_POST,
+	.method   = HTTP_GET,
 	.handler  = downloadData_handler,
 	.user_ctx = NULL  
 };
@@ -200,6 +207,7 @@ static esp_err_t http_server_init(void)
 		httpd_register_uri_handler(http_server, &dirhigh_uri);
 		httpd_register_uri_handler(http_server, &disable_uri);
 		httpd_register_uri_handler(http_server, &enable_uri);
+		httpd_register_uri_handler(http_server, &downloadData_uri);
 		
 
 		//httpd_register_uri_handler(http_server, &sync_post);
