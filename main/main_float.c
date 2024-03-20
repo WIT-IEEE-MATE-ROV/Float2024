@@ -16,10 +16,9 @@ EPS-IDF applicationto recieve get and post requests via the HTTP protocol.
 #include "pin_diagrams.c"
 #include "driver/i2c.h" /*  Needed for I2C */
 #include "webserver.h"
-//#include "stepper.h"
+#include "MS5837.h"
 
-static const char *TAG = "main";
-
+const char *TAG = "main";
 
 #define EXAMPLE_ESP_WIFI_SSID      CONFIG_ESP_WIFI_SSID
 #define EXAMPLE_ESP_WIFI_PASS      CONFIG_ESP_WIFI_PASSWORD
@@ -31,35 +30,32 @@ static void configure_led (void){
     gpio_set_direction(LED, GPIO_MODE_OUTPUT);
 }
 
+// uint32_t D1_pres, D2_temp;
+// int32_t TEMP;
+
 void app_main(void)
 {
-    // static httpd_handle_t server = NULL;
     configure_led();
-    // // configure_motorDriver();
-    // esp_err_t ret = nvs_flash_init();
-    // if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-    //   ESP_ERROR_CHECK(nvs_flash_erase());
-    //   ret = nvs_flash_init();
-    // }
-    // ESP_ERROR_CHECK(ret);
-    // ESP_LOGI(TAG, "ESP_WIFI_MODE_AP");
-
-    // wifi_init_softap();
-    // ESP_ERROR_CHECK(esp_netif_init());
-    // ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_AP_STAIPASSIGNED, &connect_handler, &server));
-
-    // i2c_param_config(I2C_NUM_0, &conf);
-	// ESP_ERROR_CHECK(i2c_driver_install(I2C_NUM_0, I2C_MODE_MASTER, 0, 0, 0));
     void *param = NULL; 
-    TaskHandle_t stepper_init_task = NULL;
+    
     TaskHandle_t ws_task = NULL;
-
+    // TaskHandle_t pressure_task = NULL;
+    printf("Started!!\n\n");
     xTaskCreate(ws_run, "WEBSERVER", 3584, param, 1, &ws_task);
-    // xTaskCreate(stepper_init, "STEPPER", 3584, param, 1, &stepper_init_task);
+    // xTaskCreate(get_pressure_data, "Pressure", 3584, param, 1, &pressure_task);
+    uint8_t data[3];
+    init(data); /* Start i2c device and check if it works*/
+    printf("This is the pressure data: %d\n",(int)(data));
+
+    double temp, pres;
 
     configASSERT(ws_task);
-    //configASSERT(stepper_init_task);
-    while(1)
+    while(1){
+        get_pressure_data(&temp, &pres);
+        printf("This is the temperature data: %.2f deg C\n",temp/100);
+        printf("This is the pressure data: %.2f mbar\n\n",pres/100);
+        vTaskDelay(10);
+    }
     vTaskDelay(10);
 }
 
