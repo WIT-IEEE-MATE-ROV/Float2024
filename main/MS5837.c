@@ -15,9 +15,8 @@ uint32_t D1_pres, D2_temp;
 double TEMP;
 double P;
 uint8_t _model;
-float fluidDensity;
 uint16_t C[8];
-double fluidDensity = 1029;
+double fluidDensity = 1023.6; // kg/m^3
 
 /* Versions */
 const uint8_t MS5837_02BA01 = 0x00; // Sensor version: From MS5837_02BA datasheet Version PROM Word 0
@@ -201,14 +200,14 @@ void init(uint8_t *data)
 
 // The pressure sensor measures absolute pressure, so it will measure the atmospheric pressure + water pressure
 // We subtract the atmospheric pressure to calculate the depth with only the water pressure
-// The average atmospheric pressure of 101300 pascal is used for the calcuation, but atmospheric pressure varies
-// If the atmospheric pressure is not 101300 at the time of reading, the depth reported will be offset
+// The average atmospheric pressure of 1013.25  mbar is used for the calcuation, but atmospheric pressure varies
+// If the atmospheric pressure is not 1013.25  at the time of reading, the depth reported will be offset
 // In order to calculate the correct depth, the actual atmospheric pressure should be measured once in air, and
 // that value should subtracted for subsequent depth calculations.
-// double convert_depth(double pressure) 
-// {
-// 	return (pressure*(-101300))/(fluidDensity*9.80665);
-// }
+double convert_depth(double pressure) 
+{
+	return (pressure-1013.25)/(fluidDensity*9.80665); // mbar / (kg/m^3 * m/s^2)
+}
 
 void get_pressure_data(double *t, double *p)
 {

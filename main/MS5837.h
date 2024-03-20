@@ -31,3 +31,4 @@ uint8_t crc4(uint16_t n_prom[]);
 void calculate();
 void init(uint8_t *data);
 void get_pressure_data(double *t, double *p);
+double convert_depth(double pressure);
