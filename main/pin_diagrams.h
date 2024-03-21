@@ -10,17 +10,24 @@
 #include "esp_http_server.h"
 #include <stdlib.h>
 #include <unistd.h>
-#include <sys/param.h>
+#include <sys/param.h>  
 #include "esp_tls_crypto.h"
 #include "esp_tls.h"
 #include "esp_check.h"
 #include "lwip/err.h"
 #include "lwip/sys.h"
 #include <esp_system.h>
-#include "esp_eth.h"
 #include "driver/gpio.h"
 
+// led and stpeepr pins
 #define LED                 (15)
 #define STEP_PIN            (2)    // The step pin
 #define DIR_PIN             (4)   // the dir pin
 #define ENABLE              (32)   // the dir pin
+    
+//SPI config for SD-card.c
+#define SD_MISO_PIN         (12)
+#define SD_MOSI_PIN         (13)
+#define SD_SCK_PIN          (14) // signal clock pin
+#define SD_CS_PIN           (27) // slect pin
+

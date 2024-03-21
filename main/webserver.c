@@ -12,7 +12,7 @@
 #include "esp_log.h"
 #include "esp_app_trace.h"
 #include "stepper.h"
-#include "pin_diagrams.c"
+#include "pin_diagrams.h"
 
 static const char *TAG = "webserver";
 

@@ -13,7 +13,7 @@ EPS-IDF applicationto recieve get and post requests via the HTTP protocol.
 #include <esp_wifi.h>
 #include <time.h>
 #include <sys/time.h>
-#include "pin_diagrams.c"
+#include "pin_diagrams.h"
 #include "driver/i2c.h" /*  Needed for I2C */
 #include "webserver.h"
 //#include "stepper.h"

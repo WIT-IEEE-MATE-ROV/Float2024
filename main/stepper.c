@@ -7,7 +7,7 @@
 #include "driver/ledc.h"
 #include "driver/gpio.h"
 #include "math.h"
-#include "pin_diagrams.c"
+#include "pin_diagrams.h"
 
 static const char *TAG = "stepper";
 
