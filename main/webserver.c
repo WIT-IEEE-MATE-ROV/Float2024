@@ -12,11 +12,12 @@
 #include "esp_log.h"
 #include "esp_app_trace.h"
 #include "stepper.h"
+
 #include "pin_diagrams.h"
 
 static const char *TAG = "webserver";
 
-#define SSID "FloatWIT" 
+#define SSID "FloatWIT_SD" 
 
 // Lets html to be loaded from seprate file
 extern const uint8_t index_html_start[] asm("_binary_index_html_start");
@@ -247,7 +248,7 @@ void ws_run(void* a) {
 	ESP_ERROR_CHECK(ret);
 	ESP_ERROR_CHECK(softap_init());
 	ESP_ERROR_CHECK(http_server_init());
-
+	ESP_ERROR_CHECK(sd)
 	// Task that inits the stepper code when the server is initialized
     void *param = NULL; 
     TaskHandle_t stepper_init_task = NULL;
