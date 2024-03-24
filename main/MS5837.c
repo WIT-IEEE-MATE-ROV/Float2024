@@ -37,8 +37,7 @@ esp_err_t reg_read(uint8_t reg_addr, uint8_t *data, size_t len)
 esp_err_t write_byte(uint8_t device_address, uint8_t data)
 {
     esp_err_t ret = i2c_master_write_to_device(I2C_MASTER_NUM, device_address, &data, 2 * sizeof(uint8_t), I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS);
-    // printf("Write ret value: %u\n", ret);
-    // ESP_ERROR_CHECK(ret);
+    ESP_ERROR_CHECK(ret);
     return ret;
 }
 

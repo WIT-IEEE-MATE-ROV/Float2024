@@ -78,7 +78,24 @@ static esp_err_t start_handler(httpd_req_t *req)
 {
 	const char resp[] = "URI POST Response";
 	ESP_LOGI(TAG, "Recieved start float request");
-	// TODO: Control of Servo
+	// Control of Servo
+	double pres = 0, temp = 0;
+	gpio_set_level(LED, 1); // indicate started
+	stp_enable();
+	stp_set_dir(0);
+	temp/=100;
+	pres/=100;
+	while(temp < 25){
+		//if temp higher change temp
+		get_pressure_data(&temp, &pres);
+		temp/=100;
+		pres/=100;
+	}
+	// vTaskDelay(500);
+	stp_set_dir(1);
+	vTaskDelay(500);
+	stp_disable();
+	gpio_set_level(LED, 0); // indicate end
 	httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
 	return ESP_OK;
 }
@@ -248,16 +265,12 @@ static esp_err_t http_server_init(void)
 		httpd_register_uri_handler(http_server, &index_get_uri);
 		httpd_register_uri_handler(http_server, &ledon_uri);
 		httpd_register_uri_handler(http_server, &lefoff_uri);
-		httpd_register_uri_handler(http_server, &dirlow_uri);
-		httpd_register_uri_handler(http_server, &dirhigh_uri);
-		httpd_register_uri_handler(http_server, &disable_uri);
-		httpd_register_uri_handler(http_server, &enable_uri);
+		// httpd_register_uri_handler(http_server, &dirlow_uri);
+		// httpd_register_uri_handler(http_server, &dirhigh_uri);
+		// httpd_register_uri_handler(http_server, &disable_uri);
+		// httpd_register_uri_handler(http_server, &enable_uri);
 		httpd_register_uri_handler(http_server, &pressure_uri);
-
-		
-
-		//httpd_register_uri_handler(http_server, &sync_post);
-
+		httpd_register_uri_handler(http_server, &start_uri);
 	}
 
 	return http_server == NULL ? ESP_FAIL : ESP_OK;

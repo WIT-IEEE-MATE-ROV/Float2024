@@ -152,7 +152,7 @@
     var led_state = document.getElementById("led_state");
 
     async function led_on_callback() {
-        console.log("is it work");
+        console.log("LED ON");
         const response = await fetch("/ledon",
             {
                 method: "post",
@@ -171,7 +171,7 @@
     }
 
     async function led_off_callback() {
-        console.log("is it work");
+        console.log("LED Off");
         const response = await fetch("/ledoff",
             {
                 method: "post",
@@ -194,9 +194,6 @@
     var dirLOW_button = document.getElementById("dirLOW");
     var step_state = document.getElementById("step_state");
     var control = document.getElementById("control");
-    // var temp = document.getElementById("temp");
-    // var pressure = document.getElementById("pressure");
-    // var depth = document.getElementById("depth");
 
     async function step_high_callback() {
         console.log("HIGH presed");
@@ -237,18 +234,6 @@
     }
 
     async function data_callback() {
-        console.log("Download Data Pressed");
-        const response = await fetch("/downloadData",
-            {
-                method: "post",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            });
-    }
-
-    async function data_download() {
         console.log("Download Data Pressed");
         const response = await fetch("/downloadData",
             {
@@ -303,7 +288,7 @@
     }
 
     async function pressure_callback() {
-        console.log("Pressure presed");
+        console.log("Pressure requested");
         response = await fetch("/pressure",
             {
                 method: "GET",
@@ -315,14 +300,14 @@
         data = await response.json(); // Parse JSON response
         jsonObject = JSON.parse(JSON.stringify(data));
         // // Access the value of the "name" property
-        console.log(jsonObject);
+        console.log("Data: " + jsonObject);
         pressure = jsonObject.pressure;
         temperature = jsonObject.temperature;
         depth = jsonObject.depth;
         document.getElementById("pressure").innerHTML = "Pressure: " + pressure + " mbar";
         document.getElementById("temp").innerHTML = "Temperature: " + temperature + " deg C";
         document.getElementById("depth").innerHTML = "Depth: " + depth + " m";
-        console.log("Pressure is: " + pressure);
+        // console.log("Pressure is: " + pressure);
         // return pressure;
     }
 
