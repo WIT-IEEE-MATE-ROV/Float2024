@@ -5,7 +5,7 @@ idf_component_register(SRCS
                     "webserver.c" 
                     "webserver.h"
                     "stepper.h"
-                    "stepper.c"
+                    "stepper.c"     
                     INCLUDE_DIRS "."
                     EMBED_TXTFILES web/index.html
                     )

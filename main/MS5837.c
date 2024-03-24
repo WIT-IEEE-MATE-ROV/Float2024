@@ -36,9 +36,9 @@ esp_err_t reg_read(uint8_t reg_addr, uint8_t *data, size_t len)
  */
 esp_err_t write_byte(uint8_t device_address, uint8_t data)
 {
-    esp_err_t ret = i2c_master_write_to_device(I2C_MASTER_NUM, device_address, &data, 1 * sizeof(uint8_t), I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS);
+    esp_err_t ret = i2c_master_write_to_device(I2C_MASTER_NUM, device_address, &data, 2 * sizeof(uint8_t), I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS);
     // printf("Write ret value: %u\n", ret);
-    ESP_ERROR_CHECK(ret);
+    // ESP_ERROR_CHECK(ret);
     return ret;
 }
 
@@ -216,7 +216,7 @@ void get_pressure_data(double *t, double *p)
     uint8_t data[3];
     uint32_t D1_pres, D2_temp;
 
-    write_byte(MS5837_SENSOR_ADDR, MS5837_CONVERT_D1_8192);
+    write_byte(MS5837_SENSOR_ADDR, MS5837_CONVERT_D1_4096);
     vTaskDelay(20 /portTICK_PERIOD_MS);
     reg_read(MS5837_ADC_READ, data, 3);
 
@@ -225,7 +225,7 @@ void get_pressure_data(double *t, double *p)
     D1_pres = (D1_pres << 8) | data[1];
     D1_pres = (D1_pres << 8) | data[2];
 
-    write_byte(MS5837_SENSOR_ADDR, MS5837_CONVERT_D2_8192);
+    write_byte(MS5837_SENSOR_ADDR, MS5837_CONVERT_D2_4096);
     vTaskDelay(20/portTICK_PERIOD_MS);
     reg_read(MS5837_ADC_READ, data, 3);
 

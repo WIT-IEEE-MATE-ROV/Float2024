@@ -117,7 +117,7 @@
         <h3> Current Status: </h3>
         <p id="pressure">Pressure: </p>
         <p id="temp">Temperature: </p>
-        <p id="altitude">Altitude: </p>
+        <p id="depth">Altitude: </p>
         <p>Battery(6V): </p>
         <p>Battery(9V):</p>
         
@@ -194,9 +194,9 @@
     var dirLOW_button = document.getElementById("dirLOW");
     var step_state = document.getElementById("step_state");
     var control = document.getElementById("control");
-    var temp = document.getElementById("temp");
-    var pressure = document.getElementById("pressure");
-    var altitude = document.getElementById("altitude");
+    // var temp = document.getElementById("temp");
+    // var pressure = document.getElementById("pressure");
+    // var depth = document.getElementById("depth");
 
     async function step_high_callback() {
         console.log("HIGH presed");
@@ -315,20 +315,25 @@
         data = await response.json(); // Parse JSON response
         jsonObject = JSON.parse(JSON.stringify(data));
         // // Access the value of the "name" property
+        console.log(jsonObject);
         pressure = jsonObject.pressure;
-        document.getElementById("pressure").innerHTML = "Pressure: " + pressure;
+        temperature = jsonObject.temperature;
+        depth = jsonObject.depth;
+        document.getElementById("pressure").innerHTML = "Pressure: " + pressure + " mbar";
+        document.getElementById("temp").innerHTML = "Temperature: " + temperature + " deg C";
+        document.getElementById("depth").innerHTML = "Depth: " + depth + " m";
         console.log("Pressure is: " + pressure);
         // return pressure;
     }
 
-    async function changePressureData() {
-        // Generate a random number
-        var newValue = pressure_callback();   
-        // console.log("Pressure is: " + newValue);
-        // Update the value of the paragraph element with id "demo"
-        document.getElementById("pressure").innerHTML = "Pressure: " + newValue;
-        // pressure.textContent = `Pressure: ${newValue}`
-    }
+    // async function changePressureData() {
+    //     // Generate a random number
+    //     var newValue = pressure_callback();   
+    //     // console.log("Pressure is: " + newValue);
+    //     // Update the value of the paragraph element with id "demo"
+    //     document.getElementById("pressure").innerHTML = "Pressure: " + newValue;
+    //     // pressure.textContent = `Pressure: ${newValue}`
+    // }
 
     // setInterval(changePressureData, 5000);
 

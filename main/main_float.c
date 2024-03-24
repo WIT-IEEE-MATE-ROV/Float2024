@@ -51,12 +51,12 @@ void app_main(void)
 
     configASSERT(ws_task);
     // while(1){
-    //     get_pressure_data(&temp, &pres);
-    //     double depth = convert_depth(pres);
-    //     printf("Temperature: %.2f deg C\n",temp/100);
-    //     printf("Pressure: %.2f mbar\n",pres/100);
-    //     printf("Depth: %.2f m\n\n", depth);
-    //     vTaskDelay(100);
+        // get_pressure_data(&temp, &pres);
+        // double depth = convert_depth(pres);
+        // printf("Temperature: %.2f deg C\n",temp/100);
+        // printf("Pressure: %.2f mbar\n",pres/100);
+        // printf("Depth: %.2f m\n\n", depth);
+        // vTaskDelay(100);
     // }
     while(1)
     vTaskDelay(10);

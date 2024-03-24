@@ -17,6 +17,8 @@
 #define MS5837_PROM_READ 0xA0
 #define MS5837_CONVERT_D1_8192 0x4A /* Idd = 20.09 uA, Td = 16.44 ms, Resolution RMS 0.20 mbar, 0.0022 degree C */
 #define MS5837_CONVERT_D2_8192 0x5A /* Idd = 20.09 uA, Td = 16.44 ms, Resolution RMS 0.20 mbar, 0.0022 degree C */
+#define MS5837_CONVERT_D1_4096 0x48
+#define MS5837_CONVERT_D2_4096 0x58
 #define MS5837_CONVERT_D1_2048 0x46
 #define MS5837_CONVERT_D2_2048 0x56
 

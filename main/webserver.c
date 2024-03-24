@@ -118,22 +118,28 @@ void double_to_json_string(double value, char* json_string, size_t size) {
 static esp_err_t pressure_temp_handler(httpd_req_t *req)
 {
 	cJSON *root = cJSON_CreateObject();
-	httpd_resp_set_type(req, "application/json");
+	// httpd_resp_set_type(req, "application/json");
 	ESP_LOGI(TAG, "Recieved pressure request");
 	
 	double temp, pres;
 	get_pressure_data(&temp, &pres);
-	// double depth = convert_depth(pres);
+	double depth = convert_depth(pres);
     // printf("Temperature: %.2f deg C\n",temp/100);
     // printf("Pressure: %.2f mbar\n",pres/100);
     // printf("Depth: %.2f m\n\n", depth);
 	pres /= 100;
 	temp /= 100;
 	char json_string_temp[8];
-	double_to_json_string(pres, json_string_temp, sizeof(json_string_temp));
+	char json_string_pres[8];
+	char json_string_depth[8];
+	double_to_json_string(temp, json_string_temp, sizeof(json_string_temp));
+	double_to_json_string(pres, json_string_pres, sizeof(json_string_pres));
+	double_to_json_string(depth, json_string_depth, sizeof(json_string_depth));
 
-	// cJSON_AddStringToObject(root, "temperature", json_string_temp);
-	cJSON_AddStringToObject(root, "pressure", json_string_temp);
+	cJSON_AddStringToObject(root, "units", "deg C, mBar, m");
+	cJSON_AddStringToObject(root, "temperature", json_string_temp);
+	cJSON_AddStringToObject(root, "pressure", json_string_pres);
+	cJSON_AddStringToObject(root, "depth", json_string_depth);
 	 
 	// Convert cJSON object to a JSON-formatted string
     char *json_string = cJSON_Print(root);
@@ -142,7 +148,7 @@ static esp_err_t pressure_temp_handler(httpd_req_t *req)
 
 	// Free allocated memory
     cJSON_Delete(root);
-    // cJSON_Delete(json_string);
+    cJSON_free(json_string);
 	return ESP_OK;
 }
 
