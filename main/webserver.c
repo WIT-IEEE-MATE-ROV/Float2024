@@ -8,11 +8,14 @@
 #include <esp_wifi.h>
 #include <time.h>
 #include <sys/time.h>
+#include <cJSON.h> // Include cJSON library for JSON manipulation
 
 #include "esp_log.h"
 #include "esp_app_trace.h"
-#include "stepper.h"
 #include "pin_diagrams.c"
+#include "stepper.h"
+#include "MS5837.h"
+
 
 static const char *TAG = "webserver";
 
@@ -107,6 +110,42 @@ static esp_err_t disable_handler(httpd_req_t *req)
 	return ESP_OK;
 }
 
+void double_to_json_string(double value, char* json_string, size_t size) {
+    // Format the double value as a JSON string
+    snprintf(json_string, size, "%.15g", value);
+}
+
+static esp_err_t pressure_temp_handler(httpd_req_t *req)
+{
+	cJSON *root = cJSON_CreateObject();
+	httpd_resp_set_type(req, "application/json");
+	ESP_LOGI(TAG, "Recieved pressure request");
+	
+	double temp, pres;
+	get_pressure_data(&temp, &pres);
+	// double depth = convert_depth(pres);
+    // printf("Temperature: %.2f deg C\n",temp/100);
+    // printf("Pressure: %.2f mbar\n",pres/100);
+    // printf("Depth: %.2f m\n\n", depth);
+	pres /= 100;
+	temp /= 100;
+	char json_string_temp[8];
+	double_to_json_string(pres, json_string_temp, sizeof(json_string_temp));
+
+	// cJSON_AddStringToObject(root, "temperature", json_string_temp);
+	cJSON_AddStringToObject(root, "pressure", json_string_temp);
+	 
+	// Convert cJSON object to a JSON-formatted string
+    char *json_string = cJSON_Print(root);
+	ESP_LOGI(TAG, "json_string\n%s", json_string);
+	httpd_resp_send(req, json_string, strlen(json_string));
+
+	// Free allocated memory
+    cJSON_Delete(root);
+    // cJSON_Delete(json_string);
+	return ESP_OK;
+}
+
 //---------- uri handlers ----------//
 httpd_uri_t index_get_uri = {
 	.uri	  = "/",
@@ -171,6 +210,13 @@ httpd_uri_t disable_uri ={
 	.user_ctx = NULL  
 };
 
+httpd_uri_t pressure_uri = {
+	.uri	  = "/pressure",
+	.method   = HTTP_GET,
+	.handler  = pressure_temp_handler,
+	.user_ctx = NULL
+};
+
 // httpd_uri_t url = {
 // 	.uri	  = "/ledon",
 // 	.method   = HTTP_GET,
@@ -200,6 +246,8 @@ static esp_err_t http_server_init(void)
 		httpd_register_uri_handler(http_server, &dirhigh_uri);
 		httpd_register_uri_handler(http_server, &disable_uri);
 		httpd_register_uri_handler(http_server, &enable_uri);
+		httpd_register_uri_handler(http_server, &pressure_uri);
+
 		
 
 		//httpd_register_uri_handler(http_server, &sync_post);

@@ -206,6 +206,8 @@ void init(uint8_t *data)
 // that value should subtracted for subsequent depth calculations.
 double convert_depth(double pressure) 
 {
+    // Values: https://bluerobotics.com/learn/pressure-depth-calculator/
+    // Equation: P = pgh ; P- pressure, p - density of liquid, g - gravity, h- depth
 	return (pressure-1013.25)/(fluidDensity*9.80665); // mbar / (kg/m^3 * m/s^2)
 }
 

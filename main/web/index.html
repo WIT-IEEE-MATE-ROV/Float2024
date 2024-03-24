@@ -112,9 +112,12 @@
         <h3 id="control">Control: (Waiting...)</h3>
         <button class="button" onclick="start_callback()" style="background-color:green">START</button>
         <button class="button" onclick="data_callback()" style="background-color:blue">DOWNLOAD DATA</button>
+        <button class="button" onclick="pressure_callback()">Get Pressure</button> 
 
         <h3> Current Status: </h3>
-        <p>Depth: </p>
+        <p id="pressure">Pressure: </p>
+        <p id="temp">Temperature: </p>
+        <p id="altitude">Altitude: </p>
         <p>Battery(6V): </p>
         <p>Battery(9V):</p>
         
@@ -191,6 +194,9 @@
     var dirLOW_button = document.getElementById("dirLOW");
     var step_state = document.getElementById("step_state");
     var control = document.getElementById("control");
+    var temp = document.getElementById("temp");
+    var pressure = document.getElementById("pressure");
+    var altitude = document.getElementById("altitude");
 
     async function step_high_callback() {
         console.log("HIGH presed");
@@ -295,6 +301,36 @@
                 }
             });
     }
+
+    async function pressure_callback() {
+        console.log("Pressure presed");
+        response = await fetch("/pressure",
+            {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+        data = await response.json(); // Parse JSON response
+        jsonObject = JSON.parse(JSON.stringify(data));
+        // // Access the value of the "name" property
+        pressure = jsonObject.pressure;
+        document.getElementById("pressure").innerHTML = "Pressure: " + pressure;
+        console.log("Pressure is: " + pressure);
+        // return pressure;
+    }
+
+    async function changePressureData() {
+        // Generate a random number
+        var newValue = pressure_callback();   
+        // console.log("Pressure is: " + newValue);
+        // Update the value of the paragraph element with id "demo"
+        document.getElementById("pressure").innerHTML = "Pressure: " + newValue;
+        // pressure.textContent = `Pressure: ${newValue}`
+    }
+
+    // setInterval(changePressureData, 5000);
 
 </script>
 
